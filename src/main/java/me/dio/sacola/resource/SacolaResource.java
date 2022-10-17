@@ -1,5 +1,6 @@
 package me.dio.sacola.resource;
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import me.dio.sacola.model.Item;
 import me.dio.sacola.model.Sacola;
@@ -7,8 +8,9 @@ import me.dio.sacola.resource.Dto.ItemDto;
 import me.dio.sacola.service.SacolaService;
 import org.springframework.web.bind.annotation.*;
 
+@Api(value="/ifood-devweek/sacolas")
 @RestController
-@RequestMapping("/ifood-devwee/sacolas")
+@RequestMapping("/ifood-devweek/sacolas")
 @RequiredArgsConstructor
 
 public class SacolaResource {
@@ -16,7 +18,7 @@ public class SacolaResource {
 
     @PostMapping
     public Item incluirItemNaSacola(@RequestBody ItemDto itemDto) {
-          return sacolaService.incluirIteNaSacola(itemDto);
+          return sacolaService.incluirItemNaSacola(itemDto);
     }
 
     @GetMapping("/{id}")
@@ -25,8 +27,9 @@ public class SacolaResource {
     }
 
     @PatchMapping("/fecharSacola/{sacolaId}")
-    public Sacola fecharSacola(@PathVariable("sacolaId") Long idSacola,
+    public Sacola fecharSacola(@PathVariable("sacolaId") Long sacolaId,
                                @RequestParam("formaPagamento") int formaPagamento) {
-        return sacolaService.fecharSacola(idSacola, formaPagamento);
+        return sacolaService.fecharSacola(sacolaId, formaPagamento);
+
     }
 }

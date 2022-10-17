@@ -12,6 +12,7 @@ import me.dio.sacola.resource.Dto.ItemDto;
 import me.dio.sacola.service.SacolaService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hibernate.boot.model.process.spi.MetadataBuildingProcess.build;
@@ -25,7 +26,7 @@ public class SacolaServiceImpl implements SacolaService {
     private final ItemRepository itemRepository;
 
     @Override
-    public Item incluirIteNaSacola(ItemDto itemDto) {
+    public Item incluirItemNaSacola(ItemDto itemDto) {
         Sacola sacola = verSacola(itemDto.getSacolaId());
 
         if (sacola.isFechado()) {
@@ -55,6 +56,19 @@ public class SacolaServiceImpl implements SacolaService {
                 throw new RuntimeException("Não é possivel adicionar item de restaurante diferente, feche ou esvazie a sacola");
             }
         }
+
+        List<Double> valorDosItens = new ArrayList<>();
+        for (Item itemDaSacola: itensDaSacola) {
+            double valorTotalItem =
+                    itemDaSacola.getProduto().getValorUnitario() * itemDaSacola.getQuantidade();
+            valorDosItens.add(valorTotalItem);
+        }
+
+        double valorTotalSacola = valorDosItens.stream()
+                .mapToDouble(valorTotalDeCadaItem -> valorTotalDeCadaItem)
+                .sum();
+
+        sacola.setValorTotal(valorTotalSacola);
         sacolaRepository.save(sacola);
 
         return itemRepository.save(itemParaSerInserido);
